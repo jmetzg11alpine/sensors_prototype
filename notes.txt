@@ -6,3 +6,4 @@ Donkey6!
 go run .
 
 npm run dev
+npm run dev -- --host (access it from over the network)

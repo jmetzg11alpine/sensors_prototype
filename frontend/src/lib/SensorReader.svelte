@@ -7,7 +7,7 @@
 	const fetchData = async () => {
 		console.log('i was called');
 		try {
-			const response = await fetch(`http://localhost:8080/micro/${id}`);
+			const response = await fetch(`http://192.168.1.73:8080/micro/${id}`);
 
 			if (response.ok) {
 				const json = await response.json();
