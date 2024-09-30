@@ -1,9 +1,21 @@
-ssh jmetzg11@192.168.1.73
-
-Donkey6!
-
-
 go run .
+
+can hot reload with:
+gin run main.go
 
 npm run dev
 npm run dev -- --host (access it from over the network)
+
+
+
+------------- micro contorlller ---------------------
+source venv/bin/activate
+pio run --target upload
+pio device monitor --baud 115200
+
+------------- MQTT ---------------------
+sudo apt update
+sudo apt install mosquitto mosquitto-clients
+sudo systemctl start mosquitto
+sudo systemctl enable mosquitto
+sudo systemctl status mosquitto
