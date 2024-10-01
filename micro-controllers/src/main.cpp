@@ -14,13 +14,22 @@ PubSubClient client(espClient);
 const char *items[] = {"dog", "cat", "bird", "lizard"};
 int currentItem = 0;
 
-// Function to connect to Wi-Fi
+IPAddress local_IP(192, 168, 1, 91); // Set this to an available IP address
+IPAddress gateway(192, 168, 1, 1);   // Replace with your router's gateway
+IPAddress subnet(255, 255, 255, 0);  // Most common subnet mask
+
 void setup_wifi()
 {
   delay(10);
   Serial.println();
   Serial.print("Connecting to WiFi: ");
   Serial.println(ssid);
+
+  // Configure static IP
+  if (!WiFi.config(local_IP, gateway, subnet))
+  {
+    Serial.println("STA Failed to configure");
+  }
 
   WiFi.begin(ssid, password);
   while (WiFi.status() != WL_CONNECTED)
@@ -62,7 +71,6 @@ void setup()
   Serial.begin(115200);
 
   setup_wifi();
-
   // client.setServer(mqttServer, mqttPort);
 }
 
@@ -72,12 +80,12 @@ void pingServer()
   Serial.print(mqttServer);
   Serial.print(" on port ");
   Serial.println(mqttPort);
+  Serial.println(WiFi.localIP());
 
-  // Attempt to connect to the target IP and port
-  if (client.connect(mqttServer, mqttPort))
+  if (espClient.connect(mqttServer, mqttPort))
   {
     Serial.println("Ping successful: Connected to target!");
-    client.stop(); // Close the connection
+    espClient.stop(); // Close the connection
   }
   else
   {
@@ -87,12 +95,12 @@ void pingServer()
 
 void loop()
 {
-  //   if (!client.connected())
-  //   {
-  //     reconnect();
-  //   }
+  // if (!client.connected())
+  // {
+  //   reconnect();
+  // }
 
-  // // Process MQTT tasks
+  // Process MQTT tasks
   // client.loop();
   // String message = "{\"mac_address\": \"" + String(items[currentItem]) + "\"}";
   // Serial.print("Publishing message: ");
@@ -101,6 +109,6 @@ void loop()
   // client.publish("devices/mac", message.c_str());
   // currentItem = (currentItem + 1) % 4;
 
-  delay(10000);
+  delay(6000);
   pingServer();
 }
