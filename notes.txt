@@ -17,5 +17,20 @@ pio device monitor --baud 115200
 sudo apt update
 sudo apt install mosquitto mosquitto-clients
 sudo systemctl start mosquitto
+sudo systemctl stop mosquitto
+sudo systemctl restart mosquitto
 sudo systemctl enable mosquitto
 sudo systemctl status mosquitto
+sudo netstat -tuln | grep 1883
+sudo journalctl -xeu mosquitto.service
+sudo cat tail -n 10 /var/log/mosquitto/mosquitto.log
+
+mosquitto_pub -h localhost -t devices/mac -m "Your Message"
+
+
+-------------hard ware -------------------
+HC-SR04     ESP32
+VCC         3.3V
+GND         GND
+TRIG        GPIO 5
+ECHO        GPIO 18

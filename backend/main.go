@@ -23,6 +23,8 @@ func connectMQTT() mqtt.Client {
 	client := mqtt.NewClient(opts)
 	if token := client.Connect(); token.Wait() && token.Error() != nil {
 		log.Fatal(token.Error())
+	} else {
+		fmt.Println("Successfully connected to MQTT broker")
 	}
 
 	return client
@@ -33,8 +35,7 @@ func main() {
 	go func() {
 		client := connectMQTT()
 
-		// Subscribe to the "devices/mac" topic
-		topic := "devices/mac"
+		topic := "esp32/output"
 		token := client.Subscribe(topic, 1, nil)
 		token.Wait()
 		fmt.Printf("Subscribed to topic: %s\n", topic)
