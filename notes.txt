@@ -28,7 +28,7 @@ sudo cat tail -n 10 /var/log/mosquitto/mosquitto.log
 mosquitto_pub -h localhost -t devices/mac -m "Your Message"
 
 
--------------hard ware -------------------
+-------------hard ware setup-------------------
 HC-SR04     ESP32
 VCC         3.3V
 GND         GND

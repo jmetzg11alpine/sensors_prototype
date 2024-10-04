@@ -1,6 +1,9 @@
 #include <WiFi.h>
 #include <PubSubClient.h>
 
+#define TRIG_PIN 5
+#define ECHO_PIN 18
+
 // WiFi credentials
 const char *ssid = WIFI_SSID;
 const char *password = WIFI_PASSWORD;
@@ -68,6 +71,9 @@ void setup()
 
   // Connect to the MQTT broker
   connectToMQTT();
+
+  pinMode(TRIG_PIN, OUTPUT);
+  pinMode(ECHO_PIN, INPUT);
 }
 
 void loop()
@@ -79,13 +85,22 @@ void loop()
   }
   client.loop();
 
-  // Publish a message every 3 seconds
-  String message = "Hello from ESP32";
-  Serial.print("Publishing message: ");
+  digitalWrite(TRIG_PIN, LOW);
+  delayMicroseconds(2);
+
+  digitalWrite(TRIG_PIN, HIGH);
+  delayMicroseconds(10);
+  digitalWrite(TRIG_PIN, LOW);
+
+  long duration = pulseIn(ECHO_PIN, HIGH);
+
+  float distance = (duration * 0.0343) / 2;
+
+  String message = String(distance, 2) + " - centimeters";
+  Serial.print("Publishing distance: ");
   Serial.println(message);
 
-  // Publish the message to the topic "esp32/output"
   client.publish("esp32/output", message.c_str());
 
-  delay(3000); // Wait 3 seconds before sending the next message
+  delay(500);
 }

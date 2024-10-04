@@ -3,6 +3,9 @@ package main
 import (
 	"fmt"
 	"log"
+	"math"
+	"strconv"
+	"strings"
 
 	mqtt "github.com/eclipse/paho.mqtt.golang"
 	"github.com/gin-contrib/cors"
@@ -33,10 +36,27 @@ func connectMQTT() mqtt.Client {
 func main() {
 
 	go func() {
+		var prevDistance float64
 		client := connectMQTT()
 
+		messageHandler := func(client mqtt.Client, msg mqtt.Message) {
+			payload := string(msg.Payload())
+			parts := strings.Split(payload, " - ")
+			if len(parts) > 0 {
+				currentDistance, err := strconv.ParseFloat(parts[0], 64)
+				if err != nil {
+					fmt.Println("Error parsing distance:", err)
+					return
+				}
+				if math.Abs(currentDistance-prevDistance) > 2 {
+					fmt.Printf("%s\n", payload)
+					prevDistance = currentDistance
+				}
+			}
+		}
+
 		topic := "esp32/output"
-		token := client.Subscribe(topic, 1, nil)
+		token := client.Subscribe(topic, 1, messageHandler)
 		token.Wait()
 		fmt.Printf("Subscribed to topic: %s\n", topic)
 
